@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "program"
+version = "0.1.0"
+description = ""
+authors = ["kajikaji0725 <kajiharalivi@icloud.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9, <3.12"
+numpy = "^1.25.2"
+opencv-python = "^4.8.0.76"
+pillow = "^10.0.0"
+pyscreenshot = "^3.1"
+decode = "^1.0.0"
+pywin32 = "^306"
+scikit-image = "^0.21.0"
+qrcode = "^7.4.2"
+pyzbar = "^0.1.9"
+flet = "^0.10.1"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
