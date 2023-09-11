@@ -1,0 +1,5 @@
+.venv
+tume/__pycache__/
+__pycache__/
+*.png
+poetry.lock
