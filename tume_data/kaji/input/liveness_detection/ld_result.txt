@@ -1,0 +1,283 @@
+before = 0.4776876655123243
+dx = 0 : red_rate = 0.4748220072902782
+dx = 0 : red_rate = 0.47291940215991407
+dx = 0 : red_rate = 0.4728615068089297
+dx = 0 : red_rate = 0.4739371976117224
+dx = 0 : red_rate = 0.47137124584613455
+dx = 0 : red_rate = 0.47014459456084706
+dx = 0 : red_rate = 0.4699453210825926
+dx = 0 : red_rate = 0.4720755049171257
+dx = 0 : red_rate = 0.46735639495363357
+dx = 0 : red_rate = 0.4679818867361961
+dx = 0 : red_rate = 0.46709554946213877
+dx = 0 : red_rate = 0.47123148444410984
+dx = 0 : red_rate = 0.46879260859549615
+dx = 0 : red_rate = 0.4677525277557494
+dx = 0 : red_rate = 0.4640020734213303
+dx = 0 : red_rate = 0.46539594695589337
+dx = 0 : red_rate = 0.4618794055253618
+dx = 0 : red_rate = 0.45635620511770975
+dx = 0 : red_rate = 0.4554692886477412
+dx = 1 : red_rate = 0.4545547177501528
+dx = 0 : red_rate = 0.45421392385355164
+dx = 0 : red_rate = 0.4588134073775473
+dx = 0 : red_rate = 0.45772087686454493
+dx = 0 : red_rate = 0.45543704130782076
+dx = 0 : red_rate = 0.45494857609178296
+after = 0.45421392385355164
+ld_list = [True, True]
+dx_list = [True, False]
+link_validation = 0.04
+
+before = 0.4570387266022956
+dx = 0 : red_rate = 0.45504943288651667
+dx = 0 : red_rate = 0.4588496088621277
+dx = 0 : red_rate = 0.4577696102373742
+dx = 0 : red_rate = 0.45867222759017134
+dx = 0 : red_rate = 0.46078238647532926
+dx = 0 : red_rate = 0.45982962473378863
+dx = 0 : red_rate = 0.4563580726636876
+dx = 0 : red_rate = 0.4580178207584466
+dx = 0 : red_rate = 0.45624484448541897
+dx = 0 : red_rate = 0.45270119953101046
+dx = 0 : red_rate = 0.4512792596624932
+dx = 0 : red_rate = 0.45343495886204993
+dx = 1 : red_rate = 0.4502395871728714
+dx = 1 : red_rate = 0.444419111758069
+dx = 1 : red_rate = 0.44677513753950604
+dx = 1 : red_rate = 0.4458161546948493
+dx = 1 : red_rate = 0.4409599283841091
+dx = 1 : red_rate = 0.4428363686725296
+dx = 1 : red_rate = 0.44328299756960043
+dx = 1 : red_rate = 0.43872634274016503
+dx = 1 : red_rate = 0.4427111536112999
+dx = 1 : red_rate = 0.44249992806376426
+dx = 1 : red_rate = 0.4409045785538449
+dx = 1 : red_rate = 0.4379166666666667
+dx = 1 : red_rate = 0.44064227731145617
+after = 0.4379166666666667
+ld_list = [True]
+dx_list = [True]
+link_validation = 0.04
+
+before = 0.43906997512279133
+dx = 4 : red_rate = 0.4375340556294747
+dx = 3 : red_rate = 0.4386572312687059
+dx = 3 : red_rate = 0.4415771606304091
+dx = 4 : red_rate = 0.43829006131254256
+dx = 6 : red_rate = 0.43083482636136067
+dx = 17 : red_rate = 0.41053025240480406
+dx = 21 : red_rate = 0.39473764388302895
+dx = 38 : red_rate = 0.3346604093489419
+dx = 40 : red_rate = 0.2896109083243651
+dx = 40 : red_rate = 0.26244351300019647
+dx = 40 : red_rate = 0.24061920310686352
+dx = 40 : red_rate = 0.22427864775786083
+dx = 40 : red_rate = 0.21397259978889774
+dx = 40 : red_rate = 0.20673880964092475
+dx = 40 : red_rate = 0.4116233660573846
+dx = 40 : red_rate = 0.40015365490601973
+dx = 40 : red_rate = 0.3899572085160336
+dx = 40 : red_rate = 0.38717396001876264
+dx = 40 : red_rate = 0.4003840359848083
+dx = 40 : red_rate = 0.4203106006384695
+dx = 40 : red_rate = 0.4436569258511769
+dx = 6 : red_rate = 0.5178665850332563
+dx = -76 : red_rate = 0.7667532676237412
+dx = -140 : red_rate = 0.8534446052967726
+dx = -140 : red_rate = 0.713863480368124
+after = 0.20673880964092475
+ld_list = [True, True, True, True, True, True, False, False, False]
+dx_list = [True, True, True, True, True, True, False, False, False]
+link_validation = 0.36
+
+before = 0.481022845086965
+dx = 17 : red_rate = 0.44071655550511574
+dx = 23 : red_rate = 0.4229856754532187
+dx = 31 : red_rate = 0.38470750743394505
+dx = 32 : red_rate = 0.3421446482257027
+dx = 34 : red_rate = 0.31016212644846514
+dx = 39 : red_rate = 0.2498268340401745
+dx = 40 : red_rate = 0.22002427837609956
+dx = 40 : red_rate = 0.19948998689874603
+dx = 40 : red_rate = 0.1842271732759171
+dx = 40 : red_rate = 0.2663960042570204
+dx = 40 : red_rate = 0.2504071889918562
+dx = 40 : red_rate = 0.44055482923920275
+dx = 40 : red_rate = 0.43065685234157
+dx = 40 : red_rate = 0.4231354389692011
+dx = 40 : red_rate = 0.4210561059736716
+dx = 40 : red_rate = 0.42266234771264954
+dx = 40 : red_rate = 0.4399547975930292
+dx = 36 : red_rate = 0.4672947814493858
+dx = -29 : red_rate = 0.6039628856647137
+dx = -140 : red_rate = 0.8464052287581699
+dx = 6 : red_rate = 1.0
+dx = 40 : red_rate = 0.5676111105586109
+dx = 40 : red_rate = 0.4636683385382165
+dx = 40 : red_rate = 0.40607416797092266
+dx = 40 : red_rate = 0.3851261274736137
+after = 0.1842271732759171
+ld_list = [True, True, True, True, False, False, False, False, True]
+dx_list = [True, True, True, True, False, False, False, True, True]
+link_validation = 0.32
+
+before = 0.2498407708048189
+dx = -1 : red_rate = 0.24171542598166876
+dx = 1 : red_rate = 0.23979320610281218
+dx = 3 : red_rate = 0.22131902140912385
+dx = 4 : red_rate = 0.22286350682957187
+dx = 10 : red_rate = 0.193561692749055
+dx = 13 : red_rate = 0.18441645369356213
+dx = 13 : red_rate = 0.1803550768969841
+dx = 19 : red_rate = 0.15145758577827811
+dx = 29 : red_rate = 0.1179892921570561
+dx = 35 : red_rate = 0.20297115321536985
+dx = 40 : red_rate = 0.19691522035881434
+dx = 40 : red_rate = 0.30754540774176553
+dx = 40 : red_rate = 0.30718700314401504
+dx = 37 : red_rate = 0.5131057038023096
+dx = -36 : red_rate = 0.6640977825698857
+dx = -54 : red_rate = 0.654344880975421
+dx = -63 : red_rate = 0.6857118854486564
+dx = -83 : red_rate = 0.5092537132372453
+dx = -124 : red_rate = 0.5787726759535148
+dx = -140 : red_rate = 0.6759247893767785
+dx = -140 : red_rate = 0.7508127080338294
+dx = -140 : red_rate = 0.7775818708654529
+dx = 40 : red_rate = 0.7205153739288657
+dx = 40 : red_rate = 0.6033028670580877
+dx = 40 : red_rate = 0.49280458474556094
+after = 0.1179892921570561
+ld_list = [False, True, True, True, True, False, True, False, False, True, False, True, False, False, True]
+dx_list = [True, True, True, True, True, True, True, False, False, False, False, False, False, False, True]
+link_validation = 0.44
+
+before = 0.5880090364114225
+dx = -1 : red_rate = 0.5869028863589073
+dx = -1 : red_rate = 0.5875755025434396
+dx = 0 : red_rate = 0.5678083288452861
+dx = 1 : red_rate = 0.5597074371786516
+dx = 7 : red_rate = 0.5563052616321206
+dx = 10 : red_rate = 0.4967266321760961
+dx = 13 : red_rate = 0.4139524732646066
+dx = 17 : red_rate = 0.36832758079698774
+dx = 22 : red_rate = 0.3192705563880698
+dx = 24 : red_rate = 0.29429894834969555
+dx = 25 : red_rate = 0.26263042992453545
+dx = 26 : red_rate = 0.2467682670385373
+dx = 27 : red_rate = 0.23580232628615194
+dx = 28 : red_rate = 0.2262921421655552
+dx = 32 : red_rate = 0.22237640840787715
+dx = 33 : red_rate = 0.22681667342957038
+dx = 32 : red_rate = 0.2994646302687719
+dx = 31 : red_rate = 0.32400908747540685
+dx = 28 : red_rate = 0.6414818318791828
+dx = 25 : red_rate = 0.7325628485093922
+dx = 8 : red_rate = 0.922101598042275
+dx = -2 : red_rate = 0.951588294790256
+dx = -17 : red_rate = 0.6367823387802178
+dx = -29 : red_rate = 0.6670422672222313
+dx = -37 : red_rate = 0.47855899961659837
+after = 0.22237640840787715
+ld_list = [True, True, True, True, True, True, True, True, True, True, True, True, False, False, False, False, False, False, False, True, False, True]
+dx_list = [True, True, True, True, True, True, True, True, True, True, True, True, True, False, False, False, False, False, False, False, False, False]
+link_validation = 0.76
+
+before = 0.14209225700164746
+dx = -1 : red_rate = 0.13523573200992556
+dx = -1 : red_rate = 0.14173228346456693
+dx = -1 : red_rate = 0.15070774354704414
+dx = -1 : red_rate = 0.14702258726899384
+dx = -1 : red_rate = 0.14399330263708665
+dx = -1 : red_rate = 0.14412136536030343
+dx = -1 : red_rate = 0.13926658426040378
+dx = -1 : red_rate = 0.13821815154038303
+dx = -1 : red_rate = 0.14267990074441686
+dx = -1 : red_rate = 0.14430379746835442
+dx = -1 : red_rate = 0.14909701805963882
+dx = -1 : red_rate = 0.14149377593360996
+dx = -1 : red_rate = 0.14444920702957564
+dx = -1 : red_rate = 0.14903442485306465
+dx = -1 : red_rate = 0.1332470892626132
+dx = -1 : red_rate = 0.14452798663324978
+dx = -1 : red_rate = 0.1438183347350715
+dx = -1 : red_rate = 0.12860892388451445
+dx = -1 : red_rate = 0.14610526315789474
+dx = -1 : red_rate = 0.1405990016638935
+dx = -1 : red_rate = 0.1380612673101133
+dx = -1 : red_rate = 0.14189189189189189
+dx = -1 : red_rate = 0.1313088109495295
+dx = -1 : red_rate = 0.13978947368421052
+dx = -2 : red_rate = 0.14520894892359645
+after = 0.12860892388451445
+ld_list = [True, True, False, True, True, False, False, False, True, False, False, True, False, True, True, False, True, True, False, True, False, False]
+dx_list = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+link_validation = 0.5
+
+before = 0.7969828008452636
+before = 0.16693418940609953
+before = 0.1444954128440367
+before = 0.14040284360189573
+before = 0.06147859922178988
+dx = -1 : red_rate = 0.07037896365042537
+dx = -1 : red_rate = 0.06220095693779904
+dx = -1 : red_rate = 0.06521739130434782
+dx = -1 : red_rate = 0.0704879938032533
+dx = -1 : red_rate = 0.06651017214397496
+dx = -1 : red_rate = 0.07074721780604133
+dx = -1 : red_rate = 0.07476635514018691
+dx = -1 : red_rate = 0.06365834004834811
+dx = -1 : red_rate = 0.06751389992057188
+dx = -1 : red_rate = 0.06431372549019608
+dx = -1 : red_rate = 0.07651109410864575
+dx = -1 : red_rate = 0.06731549067315491
+dx = -1 : red_rate = 0.08288564850345356
+dx = -1 : red_rate = 0.06352941176470588
+dx = -1 : red_rate = 0.07170393215111796
+dx = -1 : red_rate = 0.07223476297968397
+dx = -1 : red_rate = 0.0689928628072958
+dx = -1 : red_rate = 0.06682027649769585
+dx = -1 : red_rate = 0.06858924395947
+dx = -1 : red_rate = 0.06645316253002402
+dx = -1 : red_rate = 0.06847133757961783
+dx = -1 : red_rate = 0.06163828061638281
+dx = -1 : red_rate = 0.05620805369127517
+dx = -1 : red_rate = 0.061596958174904945
+dx = -2 : red_rate = 0.06394453004622497
+after = 0.05620805369127517
+ld_list = [False, True, False, False, True, False, True, False, True, False, True, False, False, True, True, False, True, False, True, True, False, False]
+dx_list = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+link_validation = 0.5454545454545454
+
+before = 0.16032608695652173
+dx = 0 : red_rate = 0.1565934065934066
+dx = -1 : red_rate = 0.16287878787878787
+dx = -1 : red_rate = 0.1507725093233884
+dx = -1 : red_rate = 0.15701136978884678
+dx = -1 : red_rate = 0.15340010542962573
+dx = -1 : red_rate = 0.1504043126684636
+dx = -1 : red_rate = 0.16393442622950818
+dx = -1 : red_rate = 0.15658174097664543
+dx = -1 : red_rate = 0.1549973276322822
+dx = -1 : red_rate = 0.16251298026998962
+dx = -1 : red_rate = 0.15118110236220472
+dx = -1 : red_rate = 0.16579497907949792
+dx = -1 : red_rate = 0.15491452991452992
+dx = -1 : red_rate = 0.161834475487612
+dx = -1 : red_rate = 0.15102481121898598
+dx = -1 : red_rate = 0.16360776088096488
+dx = -1 : red_rate = 0.15392725355824988
+dx = -1 : red_rate = 0.14712153518123666
+dx = -1 : red_rate = 0.162754303599374
+dx = -1 : red_rate = 0.15265131226566683
+dx = -1 : red_rate = 0.1540130151843818
+dx = -1 : red_rate = 0.15445440168687402
+dx = -1 : red_rate = 0.14518760195758565
+dx = -1 : red_rate = 0.13603553581343697
+dx = -1 : red_rate = 0.17150395778364116
+after = 0.13603553581343697
+ld_list = [False, True, True, False, True, True, False, True, False, True, False, True, False, True, True, False, True, False, False, True, True, False]
+dx_list = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+link_validation = 0.45454545454545453
+

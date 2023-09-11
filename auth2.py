@@ -679,11 +679,11 @@ while(True):
             print("ユーザ登録を行います")
             print("ユーザIDを入力してください")
             ans = input()
-            if not os.path.exists("./"+str(ans)):#ディレクトリがなかったら
-                os.makedirs("./"+str(ans))
+            if not os.path.exists("./tume_data/"+str(ans)):#ディレクトリがなかったら
+                os.makedirs("./tume_data/"+str(ans))
                 #os.makedirs("./"+str(ans)+"./input")
-                os.makedirs("./"+str(ans)+"./input/liveness_detection")
-            dirc = "./"+str(ans)
+                os.makedirs("./tume_data/"+str(ans)+"./input/liveness_detection")
+            dirc = "./tume_data/"+str(ans)
             os.chdir(dirc)
             print(os.getcwd())
 
@@ -728,7 +728,7 @@ while(True):
         elif kb.decode() == 's':
 
             ans = input()
-            dirc = "./"+str(ans)
+            dirc = "./tume_data/"+str(ans)
             os.chdir(dirc)
 
             print(os.getcwd())
@@ -736,9 +736,8 @@ while(True):
 
         elif kb.decode() == 't' :#テンプレート撮影コマンド
             try :#指定ウィンドウを画像保存するコード
-                print("hoge")
-                # handle = m.getid('frame')
-                # rect = winxpgui.GetWindowRect(handle)
+                handle = m.getid('frame')
+                rect = winxpgui.GetWindowRect(handle)
             except IndexError as e:
                 print("Oops!  That was no valid number.  Try again...")
             print("テンプレート用画像を撮影します---------------")   
