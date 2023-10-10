@@ -1,20 +1,111 @@
-import os
-import cv2
-import threading
-import time
 import numpy as np
 from skimage import io
 from skimage.color import rgb2gray
 from skimage.feature import local_binary_pattern
 from tqdm import tqdm
+from PIL import Image
+from pyzbar.pyzbar import decode
+import cv2
+import threading
+import time
+import os
+import qrcode
+import random
+import glob
+import re
 
 camera = None
 
 
-def move_dir():
+def write_now_temp_number(temp_number):
+    path = f"{os.path.normpath(os.getcwd())}"
+    print("gge", temp_number)
+    with open(f"{path}/temp_number.txt", "w") as f:
+        f.write(temp_number.__str__())
+
+
+def read_now_temp_number():
+    path = f"{os.path.normpath(os.getcwd())}"
+    try:
+        with open(f"{path}/temp_number.txt", "r") as f:
+            return int(f.read())
+    except FileNotFoundError:
+        return None
+
+
+def write_now_auth_number(auth_number):
+    path = f"{os.path.normpath(os.getcwd())}"
+    with open(f"{path}/auth_number.txt", "w") as f:
+        f.write(auth_number.__str__())
+
+
+def read_now_auth_number():
+    path = f"{os.path.normpath(os.getcwd())}"
+    try:
+        with open(f"{path}/auth_number.txt", "r") as f:
+            return int(f.read())
+    except FileNotFoundError:
+        return None
+
+
+def get_dir_username(username):
+    dir = os.path.normpath(os.getcwd()).split(os.sep)[-1]
+    path = "./"
+    print(dir, username)
+    if not dir == "tume_data" or dir in username:
+        path = "../"
+    username = os.listdir(path)
+    return username
+
+
+def check_current_dir(username):
+    dir_user_name = os.path.normpath(os.getcwd())
+    dir_user_name = dir_user_name.split(os.sep)
+    if dir_user_name[len(dir_user_name) - 1] in username:
+        os.chdir("../")
+
+
+def move_dir(dir):
     print(os.getcwd())
-    os.chdir("./tume_data")
+    os.chdir(f"{dir}")
     print(os.getcwd())
+
+
+def reading_qrcode_for_png():
+    img = Image.open("qrcode.png")
+    codes = decode(img)
+    inputX = codes[0][0].decode("utf-8", "ignore")
+    read_result = inputX.split(":")
+    numcode = ascii2num(read_result[1])
+    ns = numcode
+    ns_org = numcode
+    time.sleep(0.5)
+    return ns, ns_org
+
+
+def jen_rand(a, b):
+    ns = list(range(a, b + 1))
+    random.shuffle(ns)
+    return ns
+
+
+def num2ascii(num_list):
+    newlist = ""
+    for i in num_list:
+        bin_num = bin(i)
+        bin_num = bin_num[2:]
+        zero_num = bin_num.zfill(5)
+        newlist = newlist + str(zero_num)
+
+    v = [newlist[i : i + 7] for i in range(0, len(newlist), 7)]
+    acode_list = ""
+
+    for i in range(len(v)):
+        num5 = int(str(v[i]), 2)
+        asc = chr(num5)
+        acode_list = acode_list + asc
+
+    return acode_list
 
 
 def edit_contrast(image, gamma):
@@ -130,6 +221,43 @@ def liveness_detection(img):
     return red_rate
 
 
+def create_user(username):
+    if not os.path.exists(str(username)):  # ディレクトリがなかったら
+        os.makedirs(str(username))
+        # os.makedirs("./"+str(ans)+"./input")
+        os.makedirs(str(username) + "./input/liveness_detection")
+    else:
+        return False
+    dirc = str(username)
+    os.chdir(dirc)
+    print(os.getcwd())
+
+    qr = qrcode.QRCode(
+        version=3,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=2,
+        border=4,
+    )
+
+    ns_org = jen_rand(1, 25)
+    ns = ns_org
+    with open("./input/ID_backup.txt", mode="a", encoding="shift_jis") as f:
+        f.write(str(ns_org))
+
+    print(ns_org)
+    asc = num2ascii(ns_org)
+
+    qr.add_data(str(username) + ":")
+
+    qr.add_data(str(asc))
+    # qr.add_data(str(ns_res))
+    qr.make()
+    img = qr.make_image()
+    img.save("./qrcode.png")
+
+    return True
+
+
 def template_matching_zncc2(auth, temp):
     score = 0
 
@@ -213,11 +341,11 @@ def template_matching_zncc(temp_file, auth_counter, ns):
         print("認証失敗です")
 
 
-def ld_overall(camera,red_rate1):
+def ld_overall(camera, red_rate1):
     # 生体検知
     dx_list = []
     ld_list = []
-    
+
     link_validation_flag = False
 
     org_position = cv2.imread("./input/liveness_detection/ld_before.png")
@@ -303,8 +431,8 @@ def ld_overall(camera,red_rate1):
             link_counter += 1
     print(link_counter)
     print(len(ld_result_list))
-    
-    if(link_counter/len(ld_result_list) >0.7):
+
+    if link_counter / len(ld_result_list) > 0.7:
         link_validation_flag = True
 
     with open(
@@ -316,24 +444,30 @@ def ld_overall(camera,red_rate1):
         "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
     ) as f:
         f.write("\n")
-        
-    
-    if(red_rate1-after_score >=0.02 and link_validation_flag == True):
+
+    if red_rate1 - after_score >= 0.02 and link_validation_flag == True:
         print("生体検知成功です\n\n")
-    elif(red_rate1-after_score >=0.02 and link_validation_flag == False):
-        print("生体検知失敗です(リンク検証失敗)\n\n") 
-    elif(red_rate1-after_score <0.02 and link_validation_flag == True):
-        print("生体検知失敗です(閾値未満)\n\n") 
+    elif red_rate1 - after_score >= 0.02 and link_validation_flag == False:
+        print("生体検知失敗です(リンク検証失敗)\n\n")
+    elif red_rate1 - after_score < 0.02 and link_validation_flag == True:
+        print("生体検知失敗です(閾値未満)\n\n")
     else:
         print("生体検知失敗です(リンク検証失敗＆閾値未満)\n\n")
 
 
 def save_template(frame, temp_counter, ns_org):
+    
+    print("save_template",temp_counter)
+    write_now_temp_number(temp_counter)
     cv2.imwrite("./input/temp" + str(temp_counter) + ".png", frame)
 
     temp_file = convert_file("./input/temp" + str(temp_counter) + ".png")
     temp_file_center = crop_center(temp_file, 300, 300)
-    cv2.imwrite("./input/temp0_center.png", temp_file_center)
+
+    # 今回は，時系列ではなく，爪で認証できるかが重要．たぶん，保存ファイル先は関係ない(そもそもwriteしたファイルを読み込まない)
+    # cv2.imwrite("./input/temp0_center.png", temp_file_center)
+
+    cv2.imwrite(f"./input/temp_center.png", temp_file_center)
 
     # ----------tempファイル分割--------------
     p = []
@@ -354,6 +488,8 @@ def save_template(frame, temp_counter, ns_org):
 
 
 def save_certification(frame, temp_counter, auth_counter, ns, camera):
+    
+    write_now_auth_number(auth_counter)
     cv2.imwrite("./input/auth" + str(auth_counter) + ".png", frame)
 
     temp = cv2.imread("./input/result_temp" + str(temp_counter - 1) + ".png")
@@ -371,7 +507,7 @@ def save_certification(frame, temp_counter, auth_counter, ns, camera):
     thread1 = threading.Thread(
         target=template_matching_zncc, args=(temp, auth_counter, ns)
     )
-    thread2 = threading.Thread(target=ld_overall, args=(camera,red_rate1))
+    thread2 = threading.Thread(target=ld_overall, args=(camera, red_rate1))
 
     thread1.start()
     thread2.start()

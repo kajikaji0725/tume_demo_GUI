@@ -52,7 +52,7 @@ class Camera:
             print("読み取り成功です")
             read_result = inputX.split(":")
             if self.dir_flag == True:
-                os.chdir("tume_data/" + str(read_result[0]))  # ディレクトリの移動
+                os.chdir(str(read_result[0]))  # ディレクトリの移動
                 print(os.getcwd())
                 self.dir_flag = False
             numcode = ascii2num(read_result[1])
