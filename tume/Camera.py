@@ -10,7 +10,7 @@ from pyzbar.pyzbar import decode
 class Camera:
     def __init__(self):
         # OpenCVのカメラオブジェクトを作成
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.cap.set(cv2.CAP_PROP_FPS, 60)

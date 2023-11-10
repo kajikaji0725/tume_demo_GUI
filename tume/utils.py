@@ -19,7 +19,6 @@ camera = None
 
 def write_now_temp_number(temp_number):
     path = f"{os.path.normpath(os.getcwd())}"
-    print("gge", temp_number)
     with open(f"{path}/temp_number.txt", "w") as f:
         f.write(temp_number.__str__())
 
@@ -66,9 +65,9 @@ def check_current_dir(username):
 
 
 def move_dir(dir):
-    print(os.getcwd())
+    print("遷移前",os.getcwd())
     os.chdir(f"{dir}")
-    print(os.getcwd())
+    print("遷移後",os.getcwd())
 
 
 def reading_qrcode_for_png():
@@ -230,7 +229,7 @@ def create_user(username):
         return False
     dirc = str(username)
     os.chdir(dirc)
-    print(os.getcwd())
+    print("現在のディレクトリ",os.getcwd())
 
     qr = qrcode.QRCode(
         version=3,
@@ -244,7 +243,7 @@ def create_user(username):
     with open("./input/ID_backup.txt", mode="a", encoding="shift_jis") as f:
         f.write(str(ns_org))
 
-    print(ns_org)
+    print("ns_org",ns_org)
     asc = num2ascii(ns_org)
 
     qr.add_data(str(username) + ":")
@@ -479,7 +478,7 @@ def save_template(frame, temp_counter, ns_org):
 
     # ------並び替え順序作成------------------
     im_temp_list = rand_auth2(ns_org, p)  # ←分割ブロックの数を入力
-    print(ns_org)
+    print("ns_org",ns_org)
     # --------------------------------------
 
     # ------結合ファイル作成--------------------
@@ -493,7 +492,9 @@ def save_certification(frame, temp_counter, auth_counter, ns, camera):
     write_now_auth_number(auth_counter)
     cv2.imwrite("./input/auth" + str(auth_counter) + ".png", frame)
 
-    temp = cv2.imread("./input/result_temp" + str(temp_counter - 1) + ".png")
+    temp = cv2.imread("./input/result_temp" + str(temp_counter) + ".png")
+    
+    print(f"対象テンプレート画像No {temp_counter}")
 
     cv2.imwrite("./input/liveness_detection/ld_before.png", frame)
 

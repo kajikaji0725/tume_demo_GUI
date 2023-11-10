@@ -1,0 +1,32 @@
+before = 0.33171690302912565
+dx = 0 : red_rate = 0.33089978831150374
+dx = 0 : red_rate = 0.3321802022586924
+dx = 0 : red_rate = 0.332874694707012
+dx = 0 : red_rate = 0.331116206808981
+dx = 0 : red_rate = 0.3321363311946729
+dx = 0 : red_rate = 0.33268636438286625
+dx = 0 : red_rate = 0.33289903496164114
+dx = 0 : red_rate = 0.3318461659081491
+dx = 0 : red_rate = 0.33238688301948743
+dx = 0 : red_rate = 0.3325995134400979
+dx = 0 : red_rate = 0.33262360306812294
+dx = 0 : red_rate = 0.33156498673740054
+dx = 0 : red_rate = 0.33227329563480956
+dx = 0 : red_rate = 0.33222347335217484
+dx = 0 : red_rate = 0.3323924098841768
+dx = 0 : red_rate = 0.3325148429132786
+dx = 0 : red_rate = 0.33248106661490856
+dx = 0 : red_rate = 0.33159604256113495
+dx = 0 : red_rate = 0.33177842347826736
+dx = 0 : red_rate = 0.331577847283911
+dx = 0 : red_rate = 0.3315602903108926
+dx = 0 : red_rate = 0.33190966686951423
+dx = 0 : red_rate = 0.33217054842613203
+dx = 0 : red_rate = 0.33185617698996106
+dx = 0 : red_rate = 0.33235672831097096
+red_rate1 = 0.33171690302912565
+after = 0.33089978831150374
+ld_list = [True, False, False, False, True, False, False, False, True, False, True, False, False, True, True, False, True, True, False, False, True, False]
+dx_list = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+link_validation = 0.5909090909090909
+
