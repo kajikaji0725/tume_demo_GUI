@@ -252,11 +252,12 @@ class View(ft.UserControl):
     def set_temp_number_dropdown_list(self):
         self.Chose_temp.disabled = not self.isUser
         self.current_temp_number = read_now_temp_number()
+        print(self.current_temp_number)
         print("set_temp_number_dropdown_list", self.current_temp_number)
         if not self.current_temp_number == None:
             self.Chose_temp.options = [
                 ft.dropdown.Option(tmp_number + 1)
-                for tmp_number in range(0, self.current_temp_number + 1)
+                for tmp_number in range(0, self.current_temp_number)
             ]
         else:
             self.Chose_temp.options = []
@@ -299,6 +300,7 @@ class View(ft.UserControl):
             self.close_dialog_create_user(None)
             self.set_username_option()
             self.Chose_user.value = self.Create_user.value
+            self.set_temp_number_dropdown_list()
         self.update()
 
     def update_image(self):
@@ -352,20 +354,20 @@ class View(ft.UserControl):
             )
             print(self.temp_counter)
             self.set_temp_number_dropdown_list()
-            self.Chose_temp.value = self.temp_counter + 1
+            self.Chose_temp.value = self.temp_counter
             time.sleep(0.01)
-            self.current_temp_number = self.temp_counter + 1
+            self.current_temp_number = self.temp_counter
             self.Authentication_button.disabled = False
         elif self.hover_tmp_cer == "certification_Registration":
             print(f"対象テンプレート画像No {self.current_temp_number}")
+            self.auth_counter += 1
             save_certification(
                 self.template_still_image_not_base64,
-                self.current_temp_number - 1,
+                self.current_temp_number,
                 self.auth_counter,
                 self.ns,
                 self.camera,
             )
-            self.auth_counter += 1
         self.page.update()
 
     def update_page(self, page):

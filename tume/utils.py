@@ -399,6 +399,7 @@ def ld_overall(camera, red_rate1):
     with open(
         "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
     ) as f:
+        f.write("red_rate1 = " +str(red_rate1) + "\n")
         f.write("after = " + str(after_score) + "\n")
 
     ld_result_list = []
