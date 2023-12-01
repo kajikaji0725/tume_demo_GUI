@@ -1,6 +1,7 @@
 from tume.Camera import Camera
 from tume.NaileImage import NaileImage
 from tume.View import View
+from tume.Console import Console
 from tume.utils import (
     edit_contrast,
     ascii2num,

@@ -19,6 +19,7 @@ pyzbar = "^0.1.9"
 flet = "^0.10.1"
 flet-route = "^0.3.1"
 black = "^23.7.0"
+pyinstaller = "^6.1.0"
 
 
 

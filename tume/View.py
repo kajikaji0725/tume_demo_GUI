@@ -1,6 +1,7 @@
 import time
 import flet as ft
 from .Camera import Camera
+from .Console import Console
 from .utils import (
     save_template,
     save_certification,
@@ -21,10 +22,13 @@ class View(ft.UserControl):
         super().__init__()
         self.page = page
         self.camera = camera
+        self.console = Console(page, camera)
         self.hover_tmp_cer = ""
         self.template_still_image_not_base64 = None
         self.ns = []
         self.ns_org = []
+        self.ns_non_cancerable = [i for i in range(1, 26)]
+        self.ns_org_non_cancerable = [i for i in range(1, 26)]
         self.user_name = ""
         self.isUser = False
         self.temp_counter = 0
@@ -32,7 +36,8 @@ class View(ft.UserControl):
         self.current_temp_number = 0
         self.dir_user_names = []
 
-        self.Image = ft.Image(src_base64=self.camera.get_image(), height=480, width=640)
+        self.Image = ft.Image(
+            src_base64=self.camera.get_image(), height=480, width=640)
         self.Template_image = ft.Image(
             src_base64=self.camera.get_image(), height=480, width=640
         )
@@ -154,6 +159,11 @@ class View(ft.UserControl):
             width=120,
         )
 
+        self.Select_cancerable = ft.Checkbox(
+            label="cancerable",
+            value=False
+        )
+
         self.Column_right = ft.Row(
             controls=[
                 ft.Column(
@@ -162,17 +172,22 @@ class View(ft.UserControl):
                             controls=[
                                 ft.Container(ft.Text("ユーザ", size=30)),
                                 self.Chose_user,
+                                self.Select_cancerable,
                             ]
                         ),
                         ft.Row(
-                            controls=[ft.Text("テンプレートNo", size=30), self.Chose_temp]
+                            controls=[
+                                ft.Text("テンプレートNo", size=30), self.Chose_temp]
                         ),
                         self.Add_template_button,
+                        ft.Container(content=self.Authentication_button,
+                                     padding=ft.padding.only(left=100))
                     ],
-                    spacing=20,
+                    # spacing=30,
+                    alignment=ft.MainAxisAlignment.CENTER
                 )
             ],
-            alignment=ft.MainAxisAlignment.CENTER,
+            # alignment=ft.MainAxisAlignment.CENTER,
         )
 
     def build(self):
@@ -180,8 +195,9 @@ class View(ft.UserControl):
             controls=[
                 ft.Container(
                     content=ft.Row(
-                        controls=[self.Another_user_button, self.Add_user_button],
-                        alignment=ft.MainAxisAlignment.SPACE_AROUND,
+                        controls=[self.Another_user_button,
+                                  self.Add_user_button],
+                        alignment=ft.MainAxisAlignment.SPACE_EVENLY,
                     ),
                     padding=ft.padding.only(top=20),
                 ),
@@ -189,18 +205,24 @@ class View(ft.UserControl):
                     controls=[
                         ft.Row(
                             controls=[
+                                # ft.Container(content=self.Image,bgcolor="black"),
                                 self.Image,
-                                self.Column_right,
+                                ft.Container(content=self.Column_right,
+                                             padding=ft.padding.only(left=200)),
+                                # self.Column_right,
                             ],
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                        ),
-                        ft.Row(
-                            controls=[self.Authentication_button],
+                            width=5000,
                             alignment=ft.MainAxisAlignment.CENTER,
                         ),
-                    ]
+                        # ft.Row(
+                        #     controls=[self.Authentication_button],
+                        #     alignment=ft.MainAxisAlignment.CENTER,
+                        # ),
+                    ],
                 ),
-            ]
+                self.console,
+            ],
+            # spacing=40
         )
 
     def initialized(self, e):
@@ -234,8 +256,8 @@ class View(ft.UserControl):
     def resize(self, e):
         data = e.data.split(",")
         height, witdh = (int(float(data[1])), int(float(data[0])))
-        self.Image.width = int(witdh / 2)
-        self.Column_right.width = int(witdh / 2)
+        # self.Image.width = int(witdh / 2)
+        # self.Column_right.width = int(witdh / 2)
         self.update()
 
     def set_username_option(self):
@@ -297,8 +319,8 @@ class View(ft.UserControl):
         else:
             self.close_dialog_create_user(None)
             self.set_username_option()
+            self.Create_user.value = ""
             self.set_temp_number_dropdown_list()
-            self.ns,self.ns_org = reading_qrcode_for_png()
         self.update()
 
     def update_image(self):
@@ -347,9 +369,14 @@ class View(ft.UserControl):
         self.Dialog_confirm.open = False
         if self.hover_tmp_cer == "template_Registration":
             self.temp_counter += 1
-            save_template(
-                self.template_still_image_not_base64, self.temp_counter, self.ns_org
-            )
+            if self.Select_cancerable.value == True:
+                self.console.save_template(
+                    self.template_still_image_not_base64, self.temp_counter, self.ns_org
+                )
+            else:
+                self.console.save_template(
+                    self.template_still_image_not_base64, self.temp_counter, self.ns_org_non_cancerable
+                )
             self.set_temp_number_dropdown_list()
             self.Chose_temp.value = self.temp_counter
             time.sleep(0.01)
@@ -357,13 +384,22 @@ class View(ft.UserControl):
             self.Authentication_button.disabled = False
         elif self.hover_tmp_cer == "certification_Registration":
             self.auth_counter += 1
-            save_certification(
-                self.template_still_image_not_base64,
-                self.current_temp_number,
-                self.auth_counter,
-                self.ns,
-                self.camera,
-            )
+            if self.Select_cancerable.value == True:
+                self.console.save_certification(
+                    self.template_still_image_not_base64,
+                    self.current_temp_number,
+                    self.auth_counter,
+                    self.ns,
+                    self.camera,
+                )
+            else:
+                self.console.save_certification(
+                    self.template_still_image_not_base64,
+                    self.current_temp_number,
+                    self.auth_counter,
+                    self.ns_non_cancerable,
+                    self.camera,
+                )
         self.page.update()
 
     def update_page(self, page):
@@ -381,13 +417,6 @@ class View(ft.UserControl):
         if not (self.ns == None and self.ns_org == None):
             self.set_isUser(None)
             self.Chose_user.value = self.user_name
-            self.set_temp_number_dropdown_list()
             self.set_username_option()
-            self.Another_user_button.disabled = not self.isUser
-            self.temp_counter = read_now_temp_number()
-            if self.temp_counter == None:
-                self.temp_counter = 0
-            self.auth_counter = read_now_auth_number()
-            if self.auth_counter == None:
-                self.auth_counter = 0
+            self.set_username_dropdown(None)
             self.update()

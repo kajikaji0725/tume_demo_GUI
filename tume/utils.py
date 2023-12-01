@@ -65,9 +65,9 @@ def check_current_dir(username):
 
 
 def move_dir(dir):
-    print("遷移前",os.getcwd())
+    print("遷移前", os.getcwd())
     os.chdir(f"{dir}")
-    print("遷移後",os.getcwd())
+    print("遷移後", os.getcwd())
 
 
 def reading_qrcode_for_png():
@@ -78,7 +78,8 @@ def reading_qrcode_for_png():
     numcode = ascii2num(read_result[1])
     ns = numcode
     ns_org = numcode
-    time.sleep(0.5)
+    print("numcode", numcode)
+    time.sleep(0.1)
     return ns, ns_org
 
 
@@ -96,7 +97,7 @@ def num2ascii(num_list):
         zero_num = bin_num.zfill(5)
         newlist = newlist + str(zero_num)
 
-    v = [newlist[i : i + 7] for i in range(0, len(newlist), 7)]
+    v = [newlist[i: i + 7] for i in range(0, len(newlist), 7)]
     acode_list = ""
 
     for i in range(len(v)):
@@ -120,8 +121,7 @@ def edit_contrast(image, gamma):
 
 
 def ascii2num(acode_list):
-    t = [acode_list[i : i + 1] for i in range(0, len(acode_list), 1)]
-
+    t = [acode_list[i: i + 1] for i in range(0, len(acode_list), 1)]
     num_code = ""
     for j in range(len(t)):
         num = ord(t[j])
@@ -132,7 +132,7 @@ def ascii2num(acode_list):
             if int(str(num3)[0]) == 0:
                 num3 = num3[1:]
         num_code = num_code + str(num3)
-    k = [num_code[i : i + 5] for i in range(0, len(num_code), 5)]
+    k = [num_code[i: i + 5] for i in range(0, len(num_code), 5)]
 
     res_list = []
 
@@ -162,7 +162,7 @@ def crop_center(img, cropx, cropy):  # グレースケール用
     y, x = img.shape
     startx = x // 2 - (cropx // 2)
     starty = y // 2 - (cropy // 2) + 50
-    return img[starty : starty + cropy, startx : startx + cropx]
+    return img[starty: starty + cropy, startx: startx + cropx]
 
 
 def ImgSplit(img):
@@ -175,7 +175,7 @@ def ImgSplit(img):
         for w1 in range(5):
             w2 = w1 * width
             h2 = h1 * height
-            img2 = img[h2 : height + h2, w2 : width + w2]
+            img2 = img[h2: height + h2, w2: width + w2]
             buff.append(img2)
     return buff
 
@@ -191,7 +191,7 @@ def rand_auth2(ns, q):
 
 def split_list(l, n):
     for idx in range(0, len(l), n):
-        yield l[idx : idx + n]
+        yield l[idx: idx + n]
 
 
 def concat_tile(im_list_2d):
@@ -202,7 +202,7 @@ def crop_center2(img, cropx, cropy):  # 3チャンネル用→カラー
     y, x, z = img.shape
     startx = x // 2 - (cropx // 2)
     starty = y // 2 - (cropy // 2) + 50
-    return img[starty : starty + cropy, startx : startx + cropx]
+    return img[starty: starty + cropy, startx: startx + cropx]
 
 
 def liveness_detection(img):
@@ -229,7 +229,7 @@ def create_user(username):
         return False
     dirc = str(username)
     os.chdir(dirc)
-    print("現在のディレクトリ",os.getcwd())
+    print("現在のディレクトリ", os.getcwd())
 
     qr = qrcode.QRCode(
         version=3,
@@ -243,9 +243,8 @@ def create_user(username):
     with open("./input/ID_backup.txt", mode="a", encoding="shift_jis") as f:
         f.write(str(ns_org))
 
-    print("ns_org",ns_org)
+    print("ns_org", ns_org)
     asc = num2ascii(ns_org)
-
     qr.add_data(str(username) + ":")
 
     qr.add_data(str(asc))
@@ -253,6 +252,32 @@ def create_user(username):
     qr.make()
     img = qr.make_image()
     img.save("./qrcode.png")
+
+    count = 0
+    while True:
+        _, num_org = reading_qrcode_for_png()
+        if len(num_org) == 25:
+            with open("./input/ID_backup.txt", mode="w", encoding="shift_jis") as f:
+                f.write(str(ns_org))
+            print("試行回数_ns_org", count)
+            break
+        else:
+            qr = qrcode.QRCode(
+                version=3,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
+                box_size=2,
+                border=4,
+            )
+            ns_org = jen_rand(1, 25)
+            ns = ns_org
+            asc = num2ascii(ns_org)
+            qr.add_data(str(username) + ":")
+
+            qr.add_data(str(asc))
+            # qr.add_data(str(ns_res))
+            qr.make()
+            img = qr.make_image()
+            img.save("./qrcode.png")
 
     return True
 
@@ -334,7 +359,7 @@ def template_matching_zncc(temp_file, auth_counter, ns):
     with open("./input/matching_result.txt", mode="a", encoding="shift_jis") as f:
         f.write(str(highscore) + "\n")
     print("matching score is " + str(highscore))
-    if highscore >= 0.04:
+    if highscore >= 0.1:
         print("認証成功です")
     else:
         print("認証失敗です")
@@ -371,7 +396,8 @@ def ld_overall(camera, red_rate1):
         current_position = frame
         current_position = cv2.cvtColor(current_position, cv2.COLOR_RGB2GRAY)
         current_center = crop_center(current_position, 300, 300)
-        match = cv2.matchTemplate(current_center, org_position, cv2.TM_CCOEFF_NORMED)
+        match = cv2.matchTemplate(
+            current_center, org_position, cv2.TM_CCOEFF_NORMED)
         _, _, _, max_pt = cv2.minMaxLoc(match)
         pt = max_pt
         with open(
@@ -398,7 +424,7 @@ def ld_overall(camera, red_rate1):
     with open(
         "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
     ) as f:
-        f.write("red_rate1 = " +str(red_rate1) + "\n")
+        f.write("red_rate1 = " + str(red_rate1) + "\n")
         f.write("after = " + str(after_score) + "\n")
 
     ld_result_list = []
@@ -438,7 +464,8 @@ def ld_overall(camera, red_rate1):
     with open(
         "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
     ) as f:
-        f.write("link_validation = " + str(link_counter / len(ld_result_list)) + "\n")
+        f.write("link_validation = " +
+                str(link_counter / len(ld_result_list)) + "\n")
 
     with open(
         "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
@@ -456,8 +483,8 @@ def ld_overall(camera, red_rate1):
 
 
 def save_template(frame, temp_counter, ns_org):
-    
-    print("save_template",temp_counter)
+
+    print("save_template", temp_counter)
     write_now_temp_number(temp_counter)
     cv2.imwrite("./input/temp" + str(temp_counter) + ".png", frame)
 
@@ -478,23 +505,25 @@ def save_template(frame, temp_counter, ns_org):
 
     # ------並び替え順序作成------------------
     im_temp_list = rand_auth2(ns_org, p)  # ←分割ブロックの数を入力
-    print("ns_org",ns_org)
+    print("ns_org", ns_org)
     # --------------------------------------
 
     # ------結合ファイル作成--------------------
     res_temp_file = concat_tile(im_temp_list)
-    cv2.imwrite("./input/result_temp" + str(temp_counter) + ".png", res_temp_file)
+    cv2.imwrite("./input/result_temp" +
+                str(temp_counter) + ".png", res_temp_file)
     # --------------------------------------
 
 
 def save_certification(frame, temp_counter, auth_counter, ns, camera):
-    
+
     write_now_auth_number(auth_counter)
     cv2.imwrite("./input/auth" + str(auth_counter) + ".png", frame)
 
     temp = cv2.imread("./input/result_temp" + str(temp_counter) + ".png")
-    
+
     print(f"対象テンプレート画像No {temp_counter}")
+    print(f"ns : {ns}")
 
     cv2.imwrite("./input/liveness_detection/ld_before.png", frame)
 
