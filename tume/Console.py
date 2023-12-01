@@ -23,6 +23,7 @@ class Console(ft.UserControl):
         super().__init__()
         self.page = page
         self.camera = camera
+        self.method = ""
         self.console = ft.Column(
             spacing=ft.alignment.center,
             height=350,
@@ -36,6 +37,9 @@ class Console(ft.UserControl):
             controls=[self.console],
             spacing=ft.alignment.center,
         ), bgcolor="black", border_radius=10, padding=ft.padding.only(left=10, top=10, bottom=20))], alignment=ft.MainAxisAlignment.CENTER)
+
+    def set_method(self, method):
+        self.method = method
 
     def append_cnosole(self, text):
         self.console.controls.append(
@@ -58,7 +62,8 @@ class Console(ft.UserControl):
         text = ft.Text(color="white", selectable=True)
         Text_ld = ft.Text(color="white", selectable=True)
 
-        org_position = cv2.imread("./input/liveness_detection/ld_before.png")
+        org_position = cv2.imread(
+            f"./{self.method}/input/liveness_detection/ld_before.png")
         org_position = cv2.cvtColor(org_position, cv2.COLOR_RGB2GRAY)
         self.append_cnosole("生体検知を行います\n指をもう少し前に押しこんでください")
         self.append_console_Text(text)
@@ -77,7 +82,7 @@ class Console(ft.UserControl):
             self.update()
             frame = camera.get_image_not_base64()
             cv2.imwrite(
-                "./input/liveness_detection/liveness_detection"
+                f"./{self.method}/input/liveness_detection/liveness_detection"
                 + str(detect_counter)
                 + ".png",
                 frame,
@@ -94,7 +99,7 @@ class Console(ft.UserControl):
             _, _, _, max_pt = cv2.minMaxLoc(match)
             pt = max_pt
             with open(
-                "./input/liveness_detection/ld_result.txt", mode="a", encoding="utf-8"
+                f"./{self.method}/input/liveness_detection/ld_result.txt", mode="a", encoding="utf-8"
             ) as f:
                 f.write("dx = " + str(pt[1] - 140) + " : ")
             dx_list.append(pt[1] - 140)
@@ -103,7 +108,7 @@ class Console(ft.UserControl):
             crop_image = crop_center2(frame, 300, 300)
             current_redrate = liveness_detection(crop_image)
             with open(
-                "./input/liveness_detection/ld_result.txt", mode="a", encoding="utf-8"
+                f"./{self.method}/input/liveness_detection/ld_result.txt", mode="a", encoding="utf-8"
             ) as f:
                 f.write("red_rate = " + str(current_redrate) + "\n")
             ld_list.append(current_redrate)
@@ -112,10 +117,11 @@ class Console(ft.UserControl):
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
-        cv2.imwrite("./input/liveness_detection/detection_after.png", frame)
+        cv2.imwrite(
+            f"./{self.method}/input/liveness_detection/detection_after.png", frame)
 
         with open(
-            "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
+            f"./{self.method}/input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
         ) as f:
             f.write("red_rate1 = " + str(red_rate1) + "\n")
             f.write("after = " + str(after_score) + "\n")
@@ -140,7 +146,7 @@ class Console(ft.UserControl):
             dx_result_list.append(dx_result)
 
         with open(
-            "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
+            f"./{self.method}/input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
         ) as f:
             f.write("ld_list = " + str(ld_result_list) + "\n")
             f.write("dx_list = " + str(dx_result_list) + "\n")
@@ -155,13 +161,13 @@ class Console(ft.UserControl):
             link_validation_flag = True
 
         with open(
-            "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
+            f"./{self.method}/input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
         ) as f:
             f.write("link_validation = " +
                     str(link_counter / len(ld_result_list)) + "\n")
 
         with open(
-            "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
+            f"./{self.method}/input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
         ) as f:
             f.write("\n")
 
@@ -191,13 +197,14 @@ class Console(ft.UserControl):
         auth_before = False
 
         # ----------LBP処理-----------------
-        auth_file = convert_file("./input/auth" + str(auth_counter) + ".png")
+        auth_file = convert_file(
+            f"./{self.method}/input/auth" + str(auth_counter) + ".png", self.method)
         # ----------------------------------
 
         auth_file[auth_file < 0] = 0
         auth_file[auth_file > 255] = 255
         auth_file = np.asarray(auth_file, dtype=np.uint8)
-        cv2.imwrite("./input/convert_auth.png", auth_file)
+        cv2.imwrite(f"./{self.method}/input/convert_auth.png", auth_file)
 
         temp = cv2.cvtColor(temp_file, cv2.COLOR_RGB2GRAY)
 
@@ -236,7 +243,7 @@ class Console(ft.UserControl):
                 if auth_before == False:
                     auth_before = True
 
-        with open("./input/matching_result.txt", mode="a", encoding="shift_jis") as f:
+        with open(f"./{self.method}/input/matching_result.txt", mode="a", encoding="shift_jis") as f:
             f.write(str(highscore) + "\n")
         Text_auth.value = f"matching score is {highscore}"
         print("matching score is " + str(highscore))
@@ -252,16 +259,18 @@ class Console(ft.UserControl):
         # self.append_cnosole(f"save_template, {temp_counter}")
 
         print("save_template", temp_counter)
-        write_now_temp_number(temp_counter)
-        cv2.imwrite("./input/temp" + str(temp_counter) + ".png", frame)
+        write_now_temp_number(temp_counter,self.method)
+        cv2.imwrite(f"./{self.method}/input/temp" +
+                    str(temp_counter) + ".png", frame)
 
-        temp_file = convert_file("./input/temp" + str(temp_counter) + ".png")
+        temp_file = convert_file(
+            f"./{self.method}/input/temp" + str(temp_counter) + ".png", self.method)
         temp_file_center = crop_center(temp_file, 300, 300)
 
         # 今回は，時系列ではなく，爪で認証できるかが重要．たぶん，保存ファイル先は関係ない(そもそもwriteしたファイルを読み込まない)
         # cv2.imwrite("./input/temp0_center.png", temp_file_center)
 
-        cv2.imwrite(f"./input/temp_center.png", temp_file_center)
+        cv2.imwrite(f"./{self.method}/input/temp_center.png", temp_file_center)
 
         # ----------tempファイル分割--------------
         p = []
@@ -278,30 +287,33 @@ class Console(ft.UserControl):
 
         # ------結合ファイル作成--------------------
         res_temp_file = concat_tile(im_temp_list)
-        cv2.imwrite("./input/result_temp" +
+        cv2.imwrite(f"./{self.method}/input/result_temp" +
                     str(temp_counter) + ".png", res_temp_file)
         # --------------------------------------
 
     def save_certification(self, frame, temp_counter, auth_counter, ns, camera):
 
-        write_now_auth_number(auth_counter)
-        cv2.imwrite("./input/auth" + str(auth_counter) + ".png", frame)
+        write_now_auth_number(auth_counter,self.method)
+        cv2.imwrite(f"./{self.method}/input/auth" +
+                    str(auth_counter) + ".png", frame)
 
-        temp = cv2.imread("./input/result_temp" + str(temp_counter) + ".png")
+        temp = cv2.imread(
+            f"./{self.method}/input/result_temp" + str(temp_counter) + ".png")
 
         # self.append_cnosole(f"対象テンプレート画像No {temp_counter}")
         # self.append_cnosole(f"ns : {ns}")
         print(f"対象テンプレート画像No {temp_counter}")
         print(f"ns : {ns}")
 
-        cv2.imwrite("./input/liveness_detection/ld_before.png", frame)
+        cv2.imwrite(
+            f"./{self.method}/input/liveness_detection/ld_before.png", frame)
 
         ld_cropped = crop_center2(frame, 300, 300)
         cv2.imwrite(
-            "input/liveness_detection/ld_before_cropped.png", ld_cropped)
+            f"./{self.method}/input/liveness_detection/ld_before_cropped.png", ld_cropped)
         red_rate1 = liveness_detection(ld_cropped)
         with open(
-            "./input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
+            f"./{self.method}/input/liveness_detection/ld_result.txt", mode="a", encoding="shift_jis"
         ) as f:
             f.write("before = " + str(red_rate1) + "\n")
 
@@ -315,3 +327,5 @@ class Console(ft.UserControl):
         thread2.start()
         thread1.join()
         thread2.join()
+
+        self.append_cnosole("---------------------------\n\n")

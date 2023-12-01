@@ -17,14 +17,14 @@ import re
 camera = None
 
 
-def write_now_temp_number(temp_number):
-    path = f"{os.path.normpath(os.getcwd())}"
+def write_now_temp_number(temp_number, method):
+    path = f"{os.path.normpath(os.getcwd())}/{method}"
     with open(f"{path}/temp_number.txt", "w") as f:
         f.write(temp_number.__str__())
 
 
-def read_now_temp_number():
-    path = f"{os.path.normpath(os.getcwd())}"
+def read_now_temp_number(method):
+    path = f"{os.path.normpath(os.getcwd())}/{method}"
     try:
         with open(f"{path}/temp_number.txt", "r") as f:
             return int(f.read())
@@ -32,14 +32,14 @@ def read_now_temp_number():
         return None
 
 
-def write_now_auth_number(auth_number):
-    path = f"{os.path.normpath(os.getcwd())}"
+def write_now_auth_number(auth_number, method):
+    path = f"{os.path.normpath(os.getcwd())}/{method}"
     with open(f"{path}/auth_number.txt", "w") as f:
         f.write(auth_number.__str__())
 
 
-def read_now_auth_number():
-    path = f"{os.path.normpath(os.getcwd())}"
+def read_now_auth_number(method):
+    path = f"{os.path.normpath(os.getcwd())}/{method}"
     try:
         with open(f"{path}/auth_number.txt", "r") as f:
             return int(f.read())
@@ -60,6 +60,7 @@ def get_dir_username(username):
 def check_current_dir(username):
     dir_user_name = os.path.normpath(os.getcwd())
     dir_user_name = dir_user_name.split(os.sep)
+    print(dir_user_name)
     if dir_user_name[len(dir_user_name) - 1] in username:
         os.chdir("../")
 
@@ -144,7 +145,7 @@ def ascii2num(acode_list):
     return res_list
 
 
-def convert_file(in_filename):
+def convert_file(in_filename, method_):
     radius = 3
     point = 22 * radius
     method = "default"
@@ -153,7 +154,8 @@ def convert_file(in_filename):
     image = io.imread(in_filename)
     image = rgb2gray(image)
     lbp = local_binary_pattern(image, point, radius, method=method)
-    cv2.imwrite("./input/sample.png", lbp)
+    print(method_, in_filename)
+    cv2.imwrite(f"./{method_}/input/sample.png", lbp)
 
     return lbp
 
@@ -224,10 +226,14 @@ def create_user(username):
     if not os.path.exists(str(username)):  # ディレクトリがなかったら
         os.makedirs(str(username))
         # os.makedirs("./"+str(ans)+"./input")
-        os.makedirs(str(username) + "./input/liveness_detection")
+        for dir in ["A", "B", "C", "D"]:
+            os.makedirs(f"{str(username)}/{dir}")
+            #  os.makedirs(str(username) + "./input/liveness_detection")
+            os.makedirs(f"{str(username)}/{dir}/input/liveness_detection")
     else:
         return False
     dirc = str(username)
+    print(dirc)
     os.chdir(dirc)
     print("現在のディレクトリ", os.getcwd())
 
@@ -240,7 +246,7 @@ def create_user(username):
 
     ns_org = jen_rand(1, 25)
     ns = ns_org
-    with open("./input/ID_backup.txt", mode="a", encoding="shift_jis") as f:
+    with open("./ID_backup.txt", mode="a", encoding="shift_jis") as f:
         f.write(str(ns_org))
 
     print("ns_org", ns_org)
@@ -257,7 +263,7 @@ def create_user(username):
     while True:
         _, num_org = reading_qrcode_for_png()
         if len(num_org) == 25:
-            with open("./input/ID_backup.txt", mode="w", encoding="shift_jis") as f:
+            with open("./ID_backup.txt", mode="w", encoding="shift_jis") as f:
                 f.write(str(ns_org))
             print("試行回数_ns_org", count)
             break

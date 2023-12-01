@@ -17,7 +17,7 @@ def main(page: ft.Page):
     page.update()
 
     while True:
-        if not view.get_is_user():
+        if not view.get_is_user() or view.get_method == "B":
             view.qrcode_reader()
         if view.get_is_dialog():
             view.update_template_image()

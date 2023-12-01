@@ -3,16 +3,12 @@ import flet as ft
 from .Camera import Camera
 from .Console import Console
 from .utils import (
-    save_template,
-    save_certification,
     get_dir_username,
     create_user,
-    write_now_temp_number,
     check_current_dir,
     move_dir,
     read_now_temp_number,
     reading_qrcode_for_png,
-    write_now_auth_number,
     read_now_auth_number,
 )
 
@@ -20,6 +16,11 @@ from .utils import (
 class View(ft.UserControl):
     def __init__(self, page: ft.Page, camera: Camera) -> None:
         super().__init__()
+        self.explain_method = {
+            "A": "現在はA方式が選択されています．\n1:1認証方式であり，キャンセラブルは使用しません．\nQRコードの読みとりは不要です．\n初めに，ユーザを手動で選択してください．\nその次に，テンプレート画像の選択，または作成をして，認証をしてください",
+            "B": "現在はB方式が選択されています．\n1:1認証方式であり，キャンセラブルを使用します．\n初めに，ユーザを手動で選択した後に，QRコードを読み込んでください．\nその次に，テンプレート画像の選択，または作成をして，認証をしてください",
+            "C": "現在はC方式が選択されています．\n1:N認証方式であり，キャンセラブルは使用しません．\n初めにQRコードを読み取って自動でユーザ選択をしてください．\nその次に，テンプレート画像の選択，または作成をして，認証をしてください",
+            "D": "現在はD方式が選択されています．\n1:N認証方式であり，キャンセラブルを使用します．\n初めにQRコードを読み取って，自動でユーザ選択をしてください．\nその次に，テンプレート画像の選択，または作成をして，認証をしてください．"}
         self.page = page
         self.camera = camera
         self.console = Console(page, camera)
@@ -35,6 +36,11 @@ class View(ft.UserControl):
         self.auth_counter = 0
         self.current_temp_number = 0
         self.dir_user_names = []
+        self.method = ""
+        self.is_A_qrcode = False
+        self.is_B_qrcode = False
+        self.is_C_qrcode = False
+        self.is_D_qrcode = False
 
         self.Image = ft.Image(
             src_base64=self.camera.get_image(), height=480, width=640)
@@ -125,7 +131,7 @@ class View(ft.UserControl):
         )
 
         self.Another_user_button = ft.ElevatedButton(
-            content=ft.Text("別のユーザに変更", size=50),
+            content=ft.Text("別のユーザ/別の方式に変更", size=50),
             on_click=self.initialized,
             disabled=not self.isUser,
         )
@@ -149,7 +155,7 @@ class View(ft.UserControl):
         )
 
         self.Chose_user = ft.Dropdown(
-            options=[], on_change=self.set_username_dropdown, width=120
+            options=[], on_change=self.set_username_dropdown, width=120, disabled=True
         )
 
         self.Chose_temp = ft.Dropdown(
@@ -159,15 +165,30 @@ class View(ft.UserControl):
             width=120,
         )
 
+        self.Chose_method = ft.Dropdown(
+            options=[
+                ft.dropdown.Option("A"),
+                ft.dropdown.Option("B"),
+                ft.dropdown.Option("C"),
+                ft.dropdown.Option("D"),
+            ],
+            on_change=self.set_method_dropdown_value,
+            width=50
+        )
+
         self.Select_cancerable = ft.Checkbox(
-            label="cancerable",
-            value=False
+            label="QRコードなし(簡易版)",
+            value=False,
+            on_change=self.chenge_checkbox_cancelable
         )
 
         self.Column_right = ft.Row(
             controls=[
                 ft.Column(
                     controls=[
+                        ft.Row(controls=[
+                            ft.Container(ft.Text("方式", size=30)),
+                            self.Chose_method,]),
                         ft.Row(
                             controls=[
                                 ft.Container(ft.Text("ユーザ", size=30)),
@@ -236,6 +257,13 @@ class View(ft.UserControl):
         self.auth_counter = 0
         self.current_temp_number = 0
         self.dir_user_names = []
+        self.Chose_method.value = ""
+        self.Select_cancerable.value = False
+        self.is_A_qrcode = False
+        self.is_B_qrcode = False
+        self.is_C_qrcode = False
+        self.is_D_qrcode = False
+        self.Chose_user.disabled = True
         self.Another_user_button.disabled = not self.isUser
         time.sleep(0.01)
         self.Add_template_button.disabled = not self.isUser
@@ -260,11 +288,30 @@ class View(ft.UserControl):
         # self.Column_right.width = int(witdh / 2)
         self.update()
 
+    def chenge_checkbox_cancelable(self, e):
+        if self.Select_cancerable.value:
+            self.Chose_user.disabled = False
+        else:
+            if not (self.is_A_qrcode or self.is_B_qrcode or self.is_C_qrcode or self.is_D_qrcode) and (self.method == "C" or self.method == "D"):
+                self.Chose_user.disabled = True
+        self.page.update()
+        self.update()
+
     def set_username_option(self):
         self.dir_user_names = get_dir_username(self.dir_user_names)
         self.Chose_user.options = [
             ft.dropdown.Option(username) for username in self.dir_user_names
         ]
+
+    def set_method_dropdown_value(self, e):
+        self.method = self.Chose_method.value
+        self.console.append_cnosole(self.explain_method[self.method])
+        self.console.set_method(self.method)
+        if not ((self.method == "C" or self.method == "D") and not self.Select_cancerable.value):
+            self.Chose_user.disabled = False
+        else:
+            self.Chose_user.disabled = True
+        self.page.update()
 
     def set_temp_number_dropdown_value(self, e):
         self.current_temp_number = int(self.Chose_temp.value)
@@ -273,7 +320,7 @@ class View(ft.UserControl):
 
     def set_temp_number_dropdown_list(self):
         self.Chose_temp.disabled = not self.isUser
-        self.current_temp_number = read_now_temp_number()
+        self.current_temp_number = read_now_temp_number(self.method)
         print("set_temp_number_dropdown_list", self.current_temp_number)
         if not self.current_temp_number == None:
             self.Chose_temp.options = [
@@ -296,10 +343,10 @@ class View(ft.UserControl):
         check_current_dir(self.dir_user_names)
         move_dir(self.Chose_user.value)
         self.set_temp_number_dropdown_list()
-        self.temp_counter = read_now_temp_number()
+        self.temp_counter = read_now_temp_number(self.method)
         if self.temp_counter == None:
             self.temp_counter = 0
-        self.auth_counter = read_now_auth_number()
+        self.auth_counter = read_now_auth_number(self.method)
         if self.auth_counter == None:
             self.auth_counter = 0
         self.ns, self.ns_org = reading_qrcode_for_png()
@@ -367,32 +414,59 @@ class View(ft.UserControl):
 
     def clone_dialog_confirm(self, e):
         self.Dialog_confirm.open = False
+        # テンプレート保存
         if self.hover_tmp_cer == "template_Registration":
             self.temp_counter += 1
-            if self.Select_cancerable.value == True:
-                self.console.save_template(
-                    self.template_still_image_not_base64, self.temp_counter, self.ns_org
-                )
-            else:
+            if self.method == "A":
                 self.console.save_template(
                     self.template_still_image_not_base64, self.temp_counter, self.ns_org_non_cancerable
                 )
+            elif self.method == "B":
+                if self.Select_cancerable.value:
+                    self.console.save_template(
+                        self.template_still_image_not_base64, self.temp_counter, self.ns_org
+                    )
+                else:
+                    if self.is_B_qrcode:
+                        self.console.save_template(
+                            self.template_still_image_not_base64, self.temp_counter, self.ns_org
+                        )
+                    else:
+                        self.console.append_cnosole("QRコードを読み込んでください")
+            elif self.method == "C":
+                if self.Select_cancerable.value:
+                    self.console.save_template(
+                        self.template_still_image_not_base64, self.temp_counter, self.ns_org_non_cancerable
+                    )
+                else:
+                    if self.is_C_qrcode:
+                        self.console.save_template(
+                            self.template_still_image_not_base64, self.temp_counter, self.ns_org_non_cancerable
+                        )
+                    else:
+                        self.console.append_cnosole("QRコードを読み込んでください")
+            else:
+                if self.Select_cancerable.value:
+                    self.console.save_template(
+                        self.template_still_image_not_base64, self.temp_counter, self.ns_org
+                    )
+                else:
+                    if self.is_D_qrcode:
+                        self.console.save_template(
+                            self.template_still_image_not_base64, self.temp_counter, self.ns_org
+                        )
+                    else:
+                        self.console.append_cnosole("QRコードを読み込んでください")
             self.set_temp_number_dropdown_list()
             self.Chose_temp.value = self.temp_counter
             time.sleep(0.01)
             self.current_temp_number = self.temp_counter
             self.Authentication_button.disabled = False
+
+        # 認証
         elif self.hover_tmp_cer == "certification_Registration":
             self.auth_counter += 1
-            if self.Select_cancerable.value == True:
-                self.console.save_certification(
-                    self.template_still_image_not_base64,
-                    self.current_temp_number,
-                    self.auth_counter,
-                    self.ns,
-                    self.camera,
-                )
-            else:
+            if self.method == "A":
                 self.console.save_certification(
                     self.template_still_image_not_base64,
                     self.current_temp_number,
@@ -400,6 +474,66 @@ class View(ft.UserControl):
                     self.ns_non_cancerable,
                     self.camera,
                 )
+            elif self.method == "B":
+                if self.Select_cancerable.value:
+                    self.console.save_certification(
+                        self.template_still_image_not_base64,
+                        self.current_temp_number,
+                        self.auth_counter,
+                        self.ns,
+                        self.camera,
+                    )
+                else:
+                    if self.is_B_qrcode:
+                        self.console.save_certification(
+                            self.template_still_image_not_base64,
+                            self.current_temp_number,
+                            self.auth_counter,
+                            self.ns,
+                            self.camera,
+                        )
+                    else:
+                        self.console.append_cnosole("QRコードを読み込んでください")
+            elif self.method == "C":
+                if self.Select_cancerable.value:
+                    self.console.save_certification(
+                        self.template_still_image_not_base64,
+                        self.current_temp_number,
+                        self.auth_counter,
+                        self.ns_non_cancerable,
+                        self.camera,
+                    )
+                else:
+                    if self.is_C_qrcode:
+                        self.console.save_certification(
+                            self.template_still_image_not_base64,
+                            self.current_temp_number,
+                            self.auth_counter,
+                            self.ns_non_cancerable,
+                            self.camera,
+                        )
+                    else:
+                        self.console.append_cnosole("QRコードを読み込んでください")
+            else:
+                if self.Select_cancerable.value:
+                    self.console.save_certification(
+                        self.template_still_image_not_base64,
+                        self.current_temp_number,
+                        self.auth_counter,
+                        self.ns,
+                        self.camera,
+                    )
+                else:
+                    if self.is_D_qrcode:
+                        self.console.save_certification(
+                            self.template_still_image_not_base64,
+                            self.current_temp_number,
+                            self.auth_counter,
+                            self.ns,
+                            self.camera,
+                        )
+                    else:
+                        self.console.append_cnosole("QRコードを読み込んでください")
         self.page.update()
 
     def update_page(self, page):
@@ -412,11 +546,28 @@ class View(ft.UserControl):
     def get_is_dialog(self):
         return self.Dialog.open or self.Dialog_confirm.open
 
+    def get_method(self):
+        return self.method
+
     def qrcode_reader(self):
-        self.ns, self.ns_org, self.user_name = self.camera.qrcode_reader()
-        if not (self.ns == None and self.ns_org == None):
-            self.set_isUser(None)
-            self.Chose_user.value = self.user_name
-            self.set_username_option()
-            self.set_username_dropdown(None)
-            self.update()
+        if self.method == "B":
+            self.ns, self.ns_org, _ = self.camera.qrcode_reader()
+            if not (self.ns == None and self.ns_org == None):
+                self.is_B_qrcode = True
+                time.sleep(0.5)
+                self.update()
+        else:
+            self.ns, self.ns_org, self.user_name = self.camera.qrcode_reader()
+            if not (self.ns == None and self.ns_org == None):
+                if self.method == "A":
+                    self.is_A_qrcode = True
+                elif self.method == "C":
+                    self.is_C_qrcode = True
+                elif self.method == "D":
+                    self.is_D_qrcode = True
+                self.Chose_user.disabled = False
+                self.set_isUser(None)
+                self.Chose_user.value = self.user_name
+                self.set_username_option()
+                self.set_username_dropdown(None)
+                self.update()
