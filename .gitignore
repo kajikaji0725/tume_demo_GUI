@@ -4,3 +4,4 @@ __pycache__/
 *.png
 poetry.lock
 tume-data/
+pyws.py
