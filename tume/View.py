@@ -11,6 +11,7 @@ from .utils import (
     reading_qrcode_for_png,
     read_now_auth_number,
 )
+import os
 
 
 class View(ft.UserControl):
@@ -35,12 +36,14 @@ class View(ft.UserControl):
         self.temp_counter = 0
         self.auth_counter = 0
         self.current_temp_number = 0
+        self.is_set_User = False
         self.dir_user_names = []
         self.method = ""
         self.is_A_qrcode = False
         self.is_B_qrcode = False
         self.is_C_qrcode = False
         self.is_D_qrcode = False
+        self.is_addable = False
 
         self.Image = ft.Image(
             src_base64=self.camera.get_image(), height=480, width=640)
@@ -137,7 +140,7 @@ class View(ft.UserControl):
         )
 
         self.Add_user_button = ft.ElevatedButton(
-            content=ft.Text("ユーザを追加", size=50), on_click=self.open_dialog_create_user
+            content=ft.Text("ユーザを追加", size=50), on_click=self.open_dialog_create_user,disabled=self.is_addable
         )
 
         self.Add_template_button = ft.ElevatedButton(
@@ -258,12 +261,14 @@ class View(ft.UserControl):
         self.current_temp_number = 0
         self.dir_user_names = []
         self.Chose_method.value = ""
+        self.is_set_User = False
         self.Select_cancerable.value = False
         self.is_A_qrcode = False
         self.is_B_qrcode = False
         self.is_C_qrcode = False
         self.is_D_qrcode = False
         self.Chose_user.disabled = True
+        self.is_addable = False
         self.Another_user_button.disabled = not self.isUser
         time.sleep(0.01)
         self.Add_template_button.disabled = not self.isUser
@@ -304,6 +309,7 @@ class View(ft.UserControl):
         ]
 
     def set_method_dropdown_value(self, e):
+        self.is_addable = True
         self.method = self.Chose_method.value
         self.console.append_cnosole(self.explain_method[self.method])
         self.console.set_method(self.method)
@@ -331,6 +337,7 @@ class View(ft.UserControl):
             self.Chose_temp.options = []
 
     def set_username_dropdown(self, e):
+        self.is_set_User = True
         time.sleep(0.01)
         if not self.isUser:
             self.isUser = not self.isUser
@@ -349,7 +356,6 @@ class View(ft.UserControl):
         self.auth_counter = read_now_auth_number(self.method)
         if self.auth_counter == None:
             self.auth_counter = 0
-        self.ns, self.ns_org = reading_qrcode_for_png()
         time.sleep(0.01)
         self.page.update()
 
@@ -361,7 +367,7 @@ class View(ft.UserControl):
 
     def add_user(self, e):
         check_current_dir(self.dir_user_names)
-        if not create_user(self.Create_user.value):
+        if not create_user(self.Create_user.value,self.dir_user_names):
             print("そのユーザ名は既に使われています")
         else:
             self.close_dialog_create_user(None)
@@ -414,6 +420,7 @@ class View(ft.UserControl):
 
     def clone_dialog_confirm(self, e):
         self.Dialog_confirm.open = False
+        ns, ns_org = reading_qrcode_for_png()
         # テンプレート保存
         if self.hover_tmp_cer == "template_Registration":
             self.temp_counter += 1
@@ -424,7 +431,7 @@ class View(ft.UserControl):
             elif self.method == "B":
                 if self.Select_cancerable.value:
                     self.console.save_template(
-                        self.template_still_image_not_base64, self.temp_counter, self.ns_org
+                        self.template_still_image_not_base64, self.temp_counter, ns_org
                     )
                 else:
                     if self.is_B_qrcode:
@@ -448,7 +455,7 @@ class View(ft.UserControl):
             else:
                 if self.Select_cancerable.value:
                     self.console.save_template(
-                        self.template_still_image_not_base64, self.temp_counter, self.ns_org
+                        self.template_still_image_not_base64, self.temp_counter, ns_org
                     )
                 else:
                     if self.is_D_qrcode:
@@ -480,7 +487,7 @@ class View(ft.UserControl):
                         self.template_still_image_not_base64,
                         self.current_temp_number,
                         self.auth_counter,
-                        self.ns,
+                        ns,
                         self.camera,
                     )
                 else:
@@ -520,7 +527,7 @@ class View(ft.UserControl):
                         self.template_still_image_not_base64,
                         self.current_temp_number,
                         self.auth_counter,
-                        self.ns,
+                        ns,
                         self.camera,
                     )
                 else:
@@ -549,25 +556,38 @@ class View(ft.UserControl):
     def get_method(self):
         return self.method
 
+    def get_is_B_qrcode(self):
+        return self.is_B_qrcode
+
     def qrcode_reader(self):
-        if self.method == "B":
-            self.ns, self.ns_org, _ = self.camera.qrcode_reader()
-            if not (self.ns == None and self.ns_org == None):
-                self.is_B_qrcode = True
-                time.sleep(0.5)
-                self.update()
-        else:
-            self.ns, self.ns_org, self.user_name = self.camera.qrcode_reader()
-            if not (self.ns == None and self.ns_org == None):
-                if self.method == "A":
-                    self.is_A_qrcode = True
-                elif self.method == "C":
-                    self.is_C_qrcode = True
-                elif self.method == "D":
-                    self.is_D_qrcode = True
-                self.Chose_user.disabled = False
-                self.set_isUser(None)
-                self.Chose_user.value = self.user_name
-                self.set_username_option()
-                self.set_username_dropdown(None)
-                self.update()
+        if not self.method == "" and not self.Select_cancerable.value:
+            if self.method == "B" and not self.is_B_qrcode:
+                if self.is_set_User:
+                    self.ns, self.ns_org, _ = self.camera.qrcode_reader_cancerable()
+                    if not (self.ns == None and self.ns_org == None):
+                        if not (len(self.ns) == 0 and len(self.ns_org) == 0):
+                            print(self.ns)
+                            self.console.append_cnosole("QRコードを読み込みました")
+                            self.is_B_qrcode = True
+                            time.sleep(0.5)
+                            self.update()
+            else:
+                if (self.ns == None or len(self.ns) == 0):
+                    if not self.is_A_qrcode and not self.is_C_qrcode and not self.is_D_qrcode:
+                        self.ns, self.ns_org, self.user_name = self.camera.qrcode_reader()
+                        if not (self.ns == None and self.ns_org == None):
+                            if self.method == "A" and not self.is_A_qrcode:
+                                self.is_A_qrcode = True
+                            elif self.method == "C" and not self.is_C_qrcode:
+                                self.is_C_qrcode = True
+                            elif self.method == "D" and not self.is_D_qrcode:
+                                self.is_D_qrcode = True
+                            print("読み取り成功です")
+                            print(os.getcwd())
+                            print(self.ns)
+                            self.Chose_user.disabled = False
+                            self.set_isUser(None)
+                            self.Chose_user.value = self.user_name
+                            self.set_username_option()
+                            self.set_username_dropdown(None)
+                            self.update()

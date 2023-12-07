@@ -222,17 +222,34 @@ def liveness_detection(img):
     return red_rate
 
 
-def create_user(username):
+def create_user(username,dir_user_names):
+    dir_now = os.path.normpath(os.getcwd()).split(os.sep)[-1]
+    is_dir_tume_data = True
+    if dir_now in dir_user_names:
+        is_dir_tume_data = False
+
     if not os.path.exists(str(username)):  # ディレクトリがなかったら
-        os.makedirs(str(username))
-        # os.makedirs("./"+str(ans)+"./input")
-        for dir in ["A", "B", "C", "D"]:
-            os.makedirs(f"{str(username)}/{dir}")
-            #  os.makedirs(str(username) + "./input/liveness_detection")
-            os.makedirs(f"{str(username)}/{dir}/input/liveness_detection")
+        if is_dir_tume_data:
+            os.makedirs(str(username))
+            # os.makedirs("./"+str(ans)+"./input")
+            for dir in ["A", "B", "C", "D"]:
+                os.makedirs(f"{str(username)}/{dir}")
+                #  os.makedirs(str(username) + "./input/liveness_detection")
+                os.makedirs(f"{str(username)}/{dir}/input/liveness_detection")
+        else:
+            os.makedirs(f"../{str(username)}")
+            # os.makedirs("./"+str(ans)+"./input")
+            for dir in ["A", "B", "C", "D"]:
+                os.makedirs(f"../{str(username)}/{dir}")
+                #  os.makedirs(str(username) + "./input/liveness_detection")
+                os.makedirs(
+                    f"../{str(username)}/{dir}/input/liveness_detection")
     else:
         return False
-    dirc = str(username)
+    if is_dir_tume_data:
+        dirc = str(username)
+    else:
+        dirc = f"../{str(username)}"
     print(dirc)
     os.chdir(dirc)
     print("現在のディレクトリ", os.getcwd())
@@ -246,7 +263,7 @@ def create_user(username):
 
     ns_org = jen_rand(1, 25)
     ns = ns_org
-    with open("./ID_backup.txt", mode="a", encoding="shift_jis") as f:
+    with open(f"./ID_backup.txt", mode="a", encoding="shift_jis") as f:
         f.write(str(ns_org))
 
     print("ns_org", ns_org)
@@ -257,13 +274,13 @@ def create_user(username):
     # qr.add_data(str(ns_res))
     qr.make()
     img = qr.make_image()
-    img.save("./qrcode.png")
+    img.save(f"./qrcode.png")
 
     count = 0
     while True:
         _, num_org = reading_qrcode_for_png()
         if len(num_org) == 25:
-            with open("./ID_backup.txt", mode="w", encoding="shift_jis") as f:
+            with open(f"./ID_backup.txt", mode="w", encoding="shift_jis") as f:
                 f.write(str(ns_org))
             print("試行回数_ns_org", count)
             break
@@ -283,7 +300,9 @@ def create_user(username):
             # qr.add_data(str(ns_res))
             qr.make()
             img = qr.make_image()
-            img.save("./qrcode.png")
+            img.save(f"./qrcode.png")
+
+    # move_dir("../")
 
     return True
 

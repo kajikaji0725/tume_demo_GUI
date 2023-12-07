@@ -259,7 +259,7 @@ class Console(ft.UserControl):
         # self.append_cnosole(f"save_template, {temp_counter}")
 
         print("save_template", temp_counter)
-        write_now_temp_number(temp_counter,self.method)
+        write_now_temp_number(temp_counter, self.method)
         cv2.imwrite(f"./{self.method}/input/temp" +
                     str(temp_counter) + ".png", frame)
 
@@ -293,12 +293,17 @@ class Console(ft.UserControl):
 
     def save_certification(self, frame, temp_counter, auth_counter, ns, camera):
 
-        write_now_auth_number(auth_counter,self.method)
+        print("hoge")
+
+        write_now_auth_number(auth_counter, self.method)
         cv2.imwrite(f"./{self.method}/input/auth" +
                     str(auth_counter) + ".png", frame)
 
         temp = cv2.imread(
             f"./{self.method}/input/result_temp" + str(temp_counter) + ".png")
+
+        print(f"aojgaiejo ./{self.method}/input/result_temp" +
+              str(temp_counter) + ".png")
 
         # self.append_cnosole(f"対象テンプレート画像No {temp_counter}")
         # self.append_cnosole(f"ns : {ns}")

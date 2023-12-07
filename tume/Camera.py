@@ -49,17 +49,41 @@ class Camera:
         codes = decode(image)
         if len(codes) > 0:
             inputX = codes[0][0].decode("utf-8", "ignore")
-            print("読み取り成功です")
+            # print("読み取り成功です")
             read_result = inputX.split(":")
             if self.dir_flag == True:
                 os.chdir(str(read_result[0]))  # ディレクトリの移動
-                print(os.getcwd())
+                # print(os.getcwd())
                 self.dir_flag = False
             numcode = ascii2num(read_result[1])
             ns = numcode
             ns_org = numcode
             user_name = str(read_result[0])
             time.sleep(0.5)
+            return ns, ns_org, user_name
+        else:
+            return None, None, None
+    
+    def qrcode_reader_cancerable(self):
+        print(os.getcwd())
+        frame = self.get_image_not_base64()
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (7, 7), 0)
+        image = edit_contrast(blur, 5)
+        codes = decode(image)
+        if len(codes) > 0:
+            inputX = codes[0][0].decode("utf-8", "ignore")
+            # print("読み取り成功です")
+            read_result = inputX.split(":")
+            if self.dir_flag == True:
+                os.chdir(f"../{str(read_result[0])}")  # ディレクトリの移動
+                # print(os.getcwd())
+                self.dir_flag = False
+            numcode = ascii2num(read_result[1])
+            ns = numcode
+            ns_org = numcode
+            user_name = str(read_result[0])
+            # time.sleep(0.5)
             return ns, ns_org, user_name
         else:
             return None, None, None
